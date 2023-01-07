@@ -63,7 +63,6 @@ class AutoRenderer():
                 bpy.ops.object.convert(target="MESH")
             bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
             for coord in obj.bound_box:
-                # coord = obj.matrix_world * coord
                 self.min_x = min(self.min_x, coord[0])
                 self.min_y = min(self.min_y, coord[1])
                 self.min_z = min(self.min_z, coord[2])
