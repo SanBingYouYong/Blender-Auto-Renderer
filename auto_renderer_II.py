@@ -1,9 +1,10 @@
 import bpy
 import math
 
+
 """
 Automatically render the intended collections with the specified camera and specs, one collection at a time. 
-Author: SanBingYouYong, with help from ChatGPT
+Important: Backup your blender file before running this script: it applies all the transformations of your objects! 
 """
 class AutoRenderer():
     def __init__(self, collections: list, camera_name="Camera", camera_type="ORTHO", 
@@ -17,22 +18,14 @@ class AutoRenderer():
         if camera_type != "ORTHO":
             raise NotImplementedError("Only orthographic camera is supported for now.")
         self.cam.data.type = camera_type
+        
         self.output_path = output_path
         self.output_name = output_name
         self.output_format = output_format
 
         self.intended_collection = None
         
-        self.min_x = float("inf")
-        self.min_y = float("inf")
-        self.min_z = float("inf")
-        self.max_x = float("-inf")
-        self.max_y = float("-inf")
-        self.max_z = float("-inf")
-
-        self.objects_width = 0
-        self.objects_height = 0
-        self.objects_depth = 0
+        self.reset_bbox_info()
 
     def activate_all_collections(self):
         """
@@ -55,26 +48,50 @@ class AutoRenderer():
         """
         Calculate the bounding box size of the intended collection. 
         The reference to the collection must have been updated. 
+
+        Important: It applies all the transformations of your objects! Either undo afterwards, or backup your file.
         """
+        bpy.ops.object.select_all(action='DESELECT')
         for obj in self.intended_collection.objects:
-            scale = obj.matrix_world.to_scale()
+            if "Light" in obj.name: # skips lights for now
+                continue
+            # Make the object the only active one to apply transformation -> to calculate bbox correctly
+            obj.select_set(True)
+            bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
             for coord in obj.bound_box:
-                self.min_x = min(self.min_x, coord[0] * scale[0])
-                self.min_y = min(self.min_y, coord[1] * scale[1])
-                self.min_z = min(self.min_z, coord[2] * scale[2])
-                self.max_x = max(self.max_x, coord[0] * scale[0])
-                self.max_y = max(self.max_y, coord[1] * scale[1])
-                self.max_z = max(self.max_z, coord[2] * scale[2])
+                # coord = obj.matrix_world * coord
+                self.min_x = min(self.min_x, coord[0])
+                self.min_y = min(self.min_y, coord[1])
+                self.min_z = min(self.min_z, coord[2])
+                self.max_x = max(self.max_x, coord[0])
+                self.max_y = max(self.max_y, coord[1])
+                self.max_z = max(self.max_z, coord[2])
+            obj.select_set(False)
         self.objects_width = self.max_x - self.min_x
         self.objects_height = self.max_y - self.min_y
         self.objects_depth = self.max_z - self.min_z
+
+    def reset_bbox_info(self):
+        """
+        Resets the bounding box info to default values for next collection.
+        """
+        self.min_x = float("inf")
+        self.min_y = float("inf")
+        self.min_z = float("inf")
+        self.max_x = float("-inf")
+        self.max_y = float("-inf")
+        self.max_z = float("-inf")
+
+        self.objects_width = 0
+        self.objects_height = 0
+        self.objects_depth = 0
 
     def set_up_camera(self):
         """
         Set up camera to fit the bounding box of the intended collection.
         Only orthogonal camera is supported for now.
         """
-        self.cam.location = (0, self.min_y - self.objects_height, 0)
+        self.cam.location = [(self.max_x + self.min_x) / 2, self.min_y - self.objects_height, (self.max_z + self.min_z) / 2]
         self.cam.rotation_euler = (math.pi / 2, 0, 0)
         self.cam.data.ortho_scale = max(self.objects_width, self.objects_depth) * 2
         focal_length = (self.objects_width / 2) / math.tan(math.radians(30))
@@ -98,6 +115,8 @@ class AutoRenderer():
         bpy.data.images["Render Result"].save_render(filepath=filepath)
         # reactivate all collections for next render
         self.activate_all_collections()
+        # forget about last calculation
+        self.reset_bbox_info()
     
     def auto_render(self):
         """
@@ -108,12 +127,10 @@ class AutoRenderer():
 
 
 if __name__ == "__main__":
-    collections = ["Collection"]
+    collections = ["c1", "c2", "c3", "c4"]
     output_path = "./"
     output_name = "auto_render"
     output_format = "PNG"
     auto_renderer = AutoRenderer(collections, output_path=output_path, output_name=output_name, output_format=output_format)
     auto_renderer.auto_render()
-
-
 
