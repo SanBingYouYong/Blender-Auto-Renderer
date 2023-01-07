@@ -56,13 +56,14 @@ class AutoRenderer():
         The reference to the collection must have been updated. 
         """
         for obj in self.intended_collection.objects:
+            scale = obj.matrix_world.to_scale()
             for coord in obj.bound_box:
-                self.min_x = min(self.min_x, coord[0])
-                self.min_y = min(self.min_y, coord[1])
-                self.min_z = min(self.min_z, coord[2])
-                self.max_x = max(self.max_x, coord[0])
-                self.max_y = max(self.max_y, coord[1])
-                self.max_z = max(self.max_z, coord[2])
+                self.min_x = min(self.min_x, coord[0] * scale[0])
+                self.min_y = min(self.min_y, coord[1] * scale[1])
+                self.min_z = min(self.min_z, coord[2] * scale[2])
+                self.max_x = max(self.max_x, coord[0] * scale[0])
+                self.max_y = max(self.max_y, coord[1] * scale[1])
+                self.max_z = max(self.max_z, coord[2] * scale[2])
         self.objects_width = self.max_x - self.min_x
         self.objects_height = self.max_y - self.min_y
         self.objects_depth = self.max_z - self.min_z
