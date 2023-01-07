@@ -18,5 +18,7 @@ You now have one or multiple side views of your collections in intended director
   ![图片](https://user-images.githubusercontent.com/54278583/211157150-55760fdd-ec4e-4f53-bd7f-718091bdc776.png)
  
  
-### Notes: 
-It now considers the scale factor to automatically acquire the actual size of objects. So no need to apply transforms. 
+### Important: 
+***Back up*** your file before running this scripts: it **applies all the transformation** of your objects. 
+This is due to the use of bound box in determining camera position. Theoretically you can undo right after, but since your operation will involve changing the scripts (editing the collection names), sometimes the undo history will be messed up. So backup is still recommended. 
+
