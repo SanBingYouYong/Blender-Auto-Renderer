@@ -73,9 +73,9 @@ class AutoRenderer():
         Set up camera to fit the bounding box of the intended collection.
         Only orthogonal camera is supported for now.
         """
-        self.cam.location = (0, self.min_y, 0)
+        self.cam.location = (0, self.min_y - self.objects_height, 0)
         self.cam.rotation_euler = (math.pi / 2, 0, 0)
-        self.cam.data.ortho_scale = self.objects_width
+        self.cam.data.ortho_scale = max(self.objects_width, self.objects_depth) * 2
         focal_length = (self.objects_width / 2) / math.tan(math.radians(30))
         self.cam.data.lens = focal_length
     
