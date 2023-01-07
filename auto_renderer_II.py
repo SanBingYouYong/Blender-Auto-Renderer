@@ -6,10 +6,11 @@ Automatically render the intended collections with the specified camera and spec
 Author: SanBingYouYong, with help from ChatGPT
 """
 class AutoRenderer():
-    def __init__(self, collections: str, camera_name="Camera", camera_type="ORTHO", 
+    def __init__(self, collections: list, camera_name="Camera", camera_type="ORTHO", 
                     output_path="./", output_name="auto_render", output_format="PNG") -> None:
         """
-        
+        collections: a list of strings, each the name of a collection
+        camera_type: for now only "ORTHO" is supported. 
         """
         self.collections = collections
         self.cam = bpy.data.objects[camera_name]
@@ -107,7 +108,7 @@ class AutoRenderer():
 
 
 if __name__ == "__main__":
-    collections = ["temp", "suspension"]
+    collections = ["Collection"]
     output_path = "./"
     output_name = "auto_render"
     output_format = "PNG"
