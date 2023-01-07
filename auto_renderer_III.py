@@ -50,6 +50,7 @@ class AutoRenderer():
         The reference to the collection must have been updated. 
 
         Important: It applies all the transformations of your objects! Either undo afterwards, or backup your file.
+        If the object has modifiers (e.g. array), it converts it to a mesh! 
         """
         bpy.ops.object.select_all(action='DESELECT')
         for obj in self.intended_collection.objects:
@@ -57,6 +58,9 @@ class AutoRenderer():
                 continue
             # Make the object the only active one to apply transformation -> to calculate bbox correctly
             obj.select_set(True)
+            if obj.modifiers:
+                bpy.context.view_layer.objects.active = obj
+                bpy.ops.object.convert(target="MESH")
             bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
             for coord in obj.bound_box:
                 # coord = obj.matrix_world * coord
