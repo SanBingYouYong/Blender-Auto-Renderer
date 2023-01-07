@@ -16,3 +16,7 @@ Automatically renders your collections one by one, in proper side views.
 
 You now have one or multiple side views of your collections in intended directory: 
   ![图片](https://user-images.githubusercontent.com/54278583/211157150-55760fdd-ec4e-4f53-bd7f-718091bdc776.png)
+ 
+ 
+### Important: 
+If your camera ends up in strange positions, check if you haven't applied scales to your objects! 
