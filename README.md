@@ -23,3 +23,8 @@ You now have one or multiple side views of your collections in intended director
 ![auto_render_c2](https://user-images.githubusercontent.com/54278583/211163135-c9374e4c-e7c3-4fa7-afca-feba03bc6128.png)
 ![auto_render_c3](https://user-images.githubusercontent.com/54278583/211163137-c028f4f9-1058-410f-96b8-8567002a3456.png)
 ![auto_render_c4](https://user-images.githubusercontent.com/54278583/211163139-e1498d32-09d8-4cd0-87a0-f0419e2afb2b.png)
+
+### Notes: 
+
+##### Lighting: 
+You can put intended lights into the same collection to render, it skips any object with "Light" in their name (I know there are better ways -> PR plz) since one cannot apply transformation to lights and thus they mess up the bbox center calculation. Note that if you don't put lights into the same collection, they might be ignored so you'll have no extra lighting. 
