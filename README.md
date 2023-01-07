@@ -1,5 +1,5 @@
 # Blender-Auto-Renderer
-Automatically renders your collections one by one, with proper side views. 
+Automatically renders your collections one by one, in proper side views. 
 
 ### Getting Started: 
 1. Go to your blender file, move objects into collections. Say you want to render objects in "collection1" and "collection2" separately, then move anything else to some other collection. 
